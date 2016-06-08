@@ -1,96 +1,70 @@
 import {Component, default as React} from 'react';
-import shallowArrayEquals from './utils/shallowArrayEquals';
 
 export default function (mapSubscriptionsToProps) {
-    return ComponentToWrap => {
-        class MeteorConnect extends Component {
-            constructor () {
-                super();
-                this.subscriptions = {};
-                this.meteorHandles = {};
-                this.ready = {};
-            }
+  return ComponentToWrap => {
+    class MeteorConnect extends Component {
+      constructor () {
+        super();
+        this.trackers = {};
+        this.args = {};
+      }
 
-            updateSubs () {
-                let newSubscriptions = this.getSubscriptions();
-                let previousSubscriptions = this.subscriptions;
-                let unchangedSubscriptions = {};
+      componentDidUpdate () {
+        this._updateSubs(mapSubscriptionsToProps(this.props));
+      }
 
-                for (var subscription in newSubscriptions) {
-                    var newParams = newSubscriptions[subscription];
-                    var previousParams = previousSubscriptions[subscription];
-                    if (
-                        previousParams !== undefined &&
-                        shallowArrayEquals(newParams, previousParams)
-                    ) {
-                        unchangedSubscriptions[subscription] = newParams;
-                    }
-                }
+      componentWillMount () {
+        this._updateSubs(mapSubscriptionsToProps(this.props));
+      }
 
-                let filterUnchanged = (name) => unchangedSubscriptions[name] !== undefined;
-                this.stopSubscriptions(previousSubscriptions, filterUnchanged);
-                this.addSubscriptions(newSubscriptions, filterUnchanged);
-            }
+      componentWillUnmount () {
+        this._unsubAll();
+      }
 
-            getSubscriptions () {
-                return mapSubscriptionsToProps(this.props);
-            }
-
-            componentDidUpdate () {
-                this.updateSubs();
-            }
-
-            componentWillMount () {
-                this.updateSubs();
-            }
-
-            componentWillUnmount () {
-                this.stopSubscriptions(this.subscriptions);
-            }
-
-            addSubscriptions (subscriptions, filter) {
-                if (!filter) { filter = () => false; }
-                for (var sub in subscriptions) {
-                    if (filter(sub)) { continue; }
-                    this.addSubscription(sub, subscriptions[sub]);
-                }
-            }
-
-            stopSubscriptions (subscriptions, filter) {
-                if (!filter) { filter = () => false; }
-                for (var sub in subscriptions) {
-                    if (filter(sub)) { continue; }
-                    this.stopSubscription(sub);
-                }
-            }
-
-            addSubscription (name, args) {
-                let handle = Meteor.subscribe.apply(Meteor, [name, ...args]);
-                this.meteorHandles[name] = handle;
-                this.subscriptions[name] = args;
-
-                Tracker.autorun(() => {
-                    if (handle.ready()) {
-                        this.ready[name] = true;
-                    } else {
-                        this.ready[name] = false;
-                    }
-                    this.forceUpdate();
-                });
-            }
-
-            stopSubscription (name) {
-                this.meteorHandles[name].stop();
-                delete this.meteorHandles[name];
-                delete this.subscriptions[name];
-                delete this.ready[name];
-            }
-
-            render () {
-                return <ComponentToWrap {...this.props} subscriptions={this.ready} />
-            }
+      _updateSubs (newSubs) {
+        for (var subName in this.trackers) {
+          if (newSubs[subName] === undefined) {
+            // It existed in the subscription map before but not anymore, so we should unsubscribe
+            this.trackers[subName].stop();
+            this._cleanupTracker(subName);
+          }
         }
 
-        return MeteorConnect;
-    };
+        // Add new or update old subscriptions with new args
+        for (var subName in newSubs) {
+          this.args[subName] = newSubs[subName];
+          if (this.trackers[subName] === undefined) {
+            this._createTracker(subName);
+          } else {
+            this.trackers[subName].invalidate();
+          }
+        }
+      }
+
+      _unsubAll () {
+        for (var subName in this.trackers) {
+          this.trackers[subName].stop();
+        }
+        this.trackers = {};
+        this.args = {};
+      }
+
+      _cleanupTracker (name) {
+        delete this.trackers[name];
+        delete this.args[name];
+      }
+
+      _createTracker (name) {
+        this.trackers[name] = Tracker.autorun(() => {
+          Meteor.subscribe.apply(Meteor, [name, ...this.args[name]]);
+        });
+      }
+
+      render () {
+        return <ComponentToWrap {...this.props} /*TODO subscriptions={this.ready}*/ />
+      }
+    }
+
+    return MeteorConnect;
+  };
 };
