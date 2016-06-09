@@ -7,6 +7,7 @@ export default function (mapSubscriptionsToProps) {
         super();
         this.trackers = {};
         this.args = {};
+        this.ready = {};
       }
 
       componentDidUpdate () {
@@ -52,16 +53,21 @@ export default function (mapSubscriptionsToProps) {
       _cleanupTracker (name) {
         delete this.trackers[name];
         delete this.args[name];
+        delete this.ready[name];
       }
 
       _createTracker (name) {
         this.trackers[name] = Tracker.autorun(() => {
-          Meteor.subscribe.apply(Meteor, [name, ...this.args[name]]);
+          var handle = Meteor.subscribe.apply(Meteor, [name, ...this.args[name]]);
+          if (handle.ready() !== this.ready[name]) {
+            this.ready[name] = handle.ready();
+            this.forceUpdate();
+          }
         });
       }
 
       render () {
-        return <ComponentToWrap {...this.props} /*TODO subscriptions={this.ready}*/ />
+        return <ComponentToWrap {...this.props} subscriptions={this.ready} />
       }
     }
 
