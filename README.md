@@ -5,7 +5,7 @@
 
 ViewContainer.js
 ```javascript
-import subscribe from 'meteor-redux';
+import subscribe from 'react-meteor-subscribe';
 import CommentsView from './CommentsView';
 let mapSubscriptionsToProps (props) => ({
     threadComments: [props.threadId],
