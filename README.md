@@ -68,4 +68,4 @@ Meteor.subscribe('userProfile', [
 
 #### Disclaimer
 
-This project is still work in progress but should work in most circumstances. Please open issues with any bugs you encounter!
+This project is still work in progress but should work in most circumstances. Please open issues with any bugs you encounter! The API will probably change!
