@@ -3,7 +3,7 @@
 
 ### What does this do?
 
-react-meteor-subscribe subscribes your views to your meteor publications in a clear declarative way using a higher order component - similar to how Redux works with mapping your state to props. Whenever the component mounts the subscriptions are added, whenever it unmounts they are stopped. When parameters (calculated from props of parent) change, the subscription is updated with the new parameters.
+react-meteor-subscribe subscribes views to meteor publications in a clear declarative way using a higher order component - similar to how Redux works with mapping your state to props. Whenever the component mounts the subscriptions are added, whenever it unmounts they are stopped. When parameters (calculated from props of parent) change, the subscription is updated with the new parameters.
 
 #### Usage
 
