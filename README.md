@@ -45,9 +45,9 @@ export default (props) => {
 #### How do I subscribe to the same publication with different params?
 At this time, not possible. Instead you should rewrite your publications to accept an array. Lets say you wanted to do this:
 ```javascript
-    Meteor.subscribe('userProfile', '26c56a887a2eb71e0adf2b81');
-    Meteor.subscribe('userProfile', '1b09ad3a888fc1948f2f6e47');
-    Meteor.subscribe('userProfile', '0b96bd5262f8a7bdcb09ff01');
+Meteor.subscribe('userProfile', '26c56a887a2eb71e0adf2b81');
+Meteor.subscribe('userProfile', '1b09ad3a888fc1948f2f6e47');
+Meteor.subscribe('userProfile', '0b96bd5262f8a7bdcb09ff01');
 ```
 instead, try to do this
 ```javascript
