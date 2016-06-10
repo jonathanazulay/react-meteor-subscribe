@@ -29,12 +29,12 @@ export default (props) => {
     return (
         <div className="comments">
             {
-                this.props.subscriptions.threadComments ? (
+                props.subscriptions.threadComments ? (
                     // Collection is ready!
-                    this.renderComments()
+                    renderComments()
                 ) : (
                     // Our threadComments collection is not ready yet, render a spinner
-                    this.renderSpinner()
+                    renderSpinner()
                 )
             }
         </div>
