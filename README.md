@@ -1,13 +1,15 @@
 # react-meteor-subscribe
-## A React higher order component for handling Meteor subscriptions
+### A React higher order component for handling Meteor subscriptions
 
-### Usage
+#### Usage
+
 ViewContainer.js
-
-    import subscribe from 'meteor-redux';
-    import CommentsView from './CommentsView';
-    let mapSubscriptionsToProps (props) => ({
-        threadComments: [props.threadId],
-        thread: [props.threadId]
-    });
-    export default subscribe(mapSubscriptionsToProps)(CommentsView);
+```
+import subscribe from 'meteor-redux';
+import CommentsView from './CommentsView';
+let mapSubscriptionsToProps (props) => ({
+    threadComments: [props.threadId],
+    thread: [props.threadId]
+});
+export default subscribe(mapSubscriptionsToProps)(CommentsView);
+```
