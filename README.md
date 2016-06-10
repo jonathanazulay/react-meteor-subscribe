@@ -20,7 +20,7 @@ ViewContainer.js
 import subscribe from 'react-meteor-subscribe';
 import CommentsView from './CommentsView';
 
-let mapSubscriptionsToProps (props) => ({
+let mapSubscriptionsToProps = (props) => ({
     // subscribe to `threadComments` and pass threadId to publisher
     threadComments: [props.threadId],
     // subscribe to the `userData` collection (profile of the logged in user), no arguments passed
