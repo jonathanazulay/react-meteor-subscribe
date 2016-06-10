@@ -4,7 +4,7 @@
 #### Usage
 
 ViewContainer.js
-```
+```javascript
 import subscribe from 'meteor-redux';
 import CommentsView from './CommentsView';
 let mapSubscriptionsToProps (props) => ({
