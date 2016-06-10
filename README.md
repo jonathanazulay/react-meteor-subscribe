@@ -1,12 +1,18 @@
 # react-meteor-subscribe
 ### A React higher order component for handling Meteor subscriptions
 
+ [![npm version](https://img.shields.io/npm/v/react-meteor-subscribe.svg?style=flat-square)](https://www.npmjs.com/package/react-meteor-subscribe)
+
 ### What does this do?
 
 `react-meteor-subscribe` subscribes views to meteor publications in a clear declarative way using a higher order component - similar to how Redux works with mapping your state to props. Whenever the component mounts the subscriptions are added, whenever it unmounts they are stopped. When parameters (calculated from props of parent) change, the subscription is updated with the new parameters.
 
 It also passes a `subscriptions` prop to the wrapped view. This is an object with all the subscription names as keys and true/false values depending on if the subscription is ready or not.
 
+#### Install
+```bash
+npm install --save react-meteor-subscribe
+```
 #### Usage
 
 ViewContainer.js
